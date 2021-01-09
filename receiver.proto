@@ -1,0 +1,64 @@
+/*
+Written by Ole Fredrik Skudsvik <ole.skudsvik@gmail.com> 2021
+*/
+
+syntax = "proto3";
+package main;
+
+service ReceiverService {
+  rpc CheckFileExist(FileExistRequest) returns(FileExistResponse) {}
+  rpc GetFileChecksum(FileRequest) returns(FileChecksumResponse) {}
+  rpc GetFileMeta(FileRequest) returns(FileResponse) {}
+
+  rpc WriteFileBlock(WriteFileBlockRequest) returns (FileExistResponse) {}
+  rpc TruncateFile(TruncateFileRequest) returns(TruncateFileRequest) {}
+  rpc DeleteFile(FileRequest) returns(FileRequest) {}
+
+  rpc CreateDirectory(FileRequest) returns(FileRequest) {}
+  rpc DeleteDirectory (FileRequest) returns(FileRequest) {}
+}
+
+message BlockMetaType {
+  int64 Index = 1;
+  int64 Offset = 2;
+  string ChkSum = 3;
+  int64 Size = 4;
+}
+
+
+message FileResponse {
+  string Path = 1;
+  int64 BlockSize = 2;
+  int64 NumBlocks = 3;
+  repeated BlockMetaType BlockMeta = 4;
+  string CheckSum = 5;
+}
+
+message FileExistRequest {
+  string Path = 1;
+}
+
+message FileExistResponse {
+  bool Yes = 1;
+}
+
+message FileRequest {
+  string Path = 1;
+  int64 BlockSize = 2;
+}
+
+message TruncateFileRequest {
+  string Path = 1;
+  int64 Size = 2;
+}
+
+message FileChecksumResponse {
+  string Checksum = 1;
+}
+
+message WriteFileBlockRequest {
+  string FilePath = 1;
+  int64 offset = 2;
+  int64 size = 3;
+  bytes data = 4;
+}
