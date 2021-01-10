@@ -18,21 +18,15 @@ import (
 type Receiver struct {
 	listener *net.Listener
 	grpcSrv  *grpc.Server
-	recvPath string
 }
 
 // NewReceiver Create a new Receiver instance.
-func NewReceiver(path string) *Receiver {
-	return &Receiver{
-		recvPath: path,
-	}
+func NewReceiver() *Receiver {
+	return &Receiver{}
 }
 
 // Start receiver.
 func (r *Receiver) Start(address string) error {
-	err := os.Chdir(r.recvPath)
-	ExitIfError(err)
-
 	listener, err := net.Listen("tcp", address)
 
 	if err != nil {
@@ -178,6 +172,7 @@ func GetRemoteFileMeta(client ReceiverServiceClient, filePath string, blockSize 
 
 // CreateDirectory (RPC) Create a directory.
 func (r *Receiver) CreateDirectory(ctx context.Context, req *FileRequest) (*FileRequest, error) {
+	// TODO:  Set correct permission.
 	err := os.MkdirAll(req.GetPath(), 0777)
 	return req, err
 }

@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -24,8 +23,22 @@ func printUsage(msg string) {
 	os.Exit(1)
 }
 
+// Initial file synchronization called before we start
+// our fsnotify watcher.
+func initialSync(tq *TransferManager) {
+	directories := ListDirectories(".")
+	files := ListFiles(".")
+
+	for _, dir := range directories {
+		tq.CreateDirectory(dir)
+	}
+
+	for _, file := range files {
+		tq.AddFile(file)
+	}
+}
+
 func main() {
-	var server FileServer
 	if len(os.Args) < 3 {
 		printUsage("Not enough arguments.")
 	}
@@ -53,17 +66,22 @@ func main() {
 		printUsage(fmt.Sprintf("%s is not a directory.", path))
 	}
 
-	// Instantiate correct server implementation for specified mode.
+	err = os.Chdir(path)
+	ExitIfError(err)
+
 	switch mode {
 	case "serve":
-		server = NewSender(path)
+		sender := NewSender()
+		err := sender.Connect(":9999")
+		ExitIfError(err)
+
+		txManager := NewTransferManager(sender)
+		initialSync(txManager)
+		txManager.Start()
 
 	case "receive":
-		server = NewReceiver(path)
-	}
-
-	// Start server.
-	if err := server.Start(":9999"); err != nil {
-		log.Fatalf("Failed to start: %s\n", err.Error())
+		receiver := NewReceiver()
+		err := receiver.Start(":9999")
+		ExitIfError(err)
 	}
 }

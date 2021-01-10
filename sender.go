@@ -9,30 +9,25 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 
 	"google.golang.org/grpc"
 )
 
 // Sender implementation of fileserver.
 type Sender struct {
-	listener *net.Listener
-	syncPath string
-	client   ReceiverServiceClient
+	listener    *net.Listener
+	client      ReceiverServiceClient
+	isConnected bool
 }
 
-// NewSender Create a new Sender instance.
-func NewSender(path string) *Sender {
-	return &Sender{
-		syncPath: path,
-	}
+// NewSender Create news instance of Sender.
+func NewSender() *Sender {
+	return &Sender{}
 }
 
-// Start - Connect to remote.
-func (s *Sender) Start(address string) error {
-	err := os.Chdir(s.syncPath)
-	ExitIfError(err)
-
+// Connect - Connect to remote.
+func (s *Sender) Connect(address string) error {
+	s.isConnected = false
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 
 	if err != nil {
@@ -40,9 +35,7 @@ func (s *Sender) Start(address string) error {
 	}
 
 	s.client = NewReceiverServiceClient(conn)
-
-	// Initial sync.
-	s.SyncDirectory(".")
+	s.isConnected = true
 
 	return nil
 }
@@ -63,6 +56,7 @@ func (s *Sender) SyncFile(filePath string) {
 	var missingBlocks []int64
 	remoteFile, err := GetRemoteFileMeta(s.client, filePath, localFile.BlockSize)
 	if err != nil {
+		// If file was not found on remote end we should just write all blocks.
 		for i := int64(0); i < localFile.NumBlocks; i++ {
 			missingBlocks = append(missingBlocks, i)
 		}
@@ -117,21 +111,13 @@ func (s *Sender) SyncFile(filePath string) {
 	}
 }
 
-// SyncDirectory Transfer a directory to the remote.
-func (s *Sender) SyncDirectory(path string) {
-	directories := ListDirectories(path)
-	files := ListFiles(path)
+// CreateDirectory ..
+func (s *Sender) CreateDirectory(path string) error {
+	_, err := s.client.CreateDirectory(context.Background(), &FileRequest{Path: path})
 
-	for _, dir := range directories {
-		_, err := s.client.CreateDirectory(context.Background(), &FileRequest{Path: dir})
-		if err != nil {
-			log.Printf("Failed to create directory %s: %s\n", dir, err.Error())
-		} else {
-			log.Printf("Creating directory %s\n", dir)
-		}
+	if err != nil {
+		return err
 	}
 
-	for _, file := range files {
-		s.SyncFile(file)
-	}
+	return nil
 }
