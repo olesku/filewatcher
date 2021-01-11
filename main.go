@@ -12,7 +12,7 @@ import (
 func printUsage(msg string) {
 	fmt.Fprintf(os.Stderr, "Usage:\n")
 	fmt.Fprintf(os.Stderr, "\tSynchronize path to remote target:\n")
-	fmt.Fprintf(os.Stderr, "\t\t%s <serve> <path> <remote-host> <port>\n\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "\t\t%s <send> <path> <remote-host> <port>\n\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "\tReceive data (listen-mode):\n")
 	fmt.Fprintf(os.Stderr, "\t\t%s <receive> <path> <listen-port>\n\n", os.Args[0])
 
@@ -25,16 +25,22 @@ func printUsage(msg string) {
 
 // Initial file synchronization called before we start
 // our fsnotify watcher.
-func initialSync(tq *TransferManager) {
-	directories := ListDirectories(".")
-	files := ListFiles(".")
+func initialSync(tq *TransferManager, path string) {
+	directories := ListDirectories(path)
+	files := ListFiles(path)
 
 	for _, dir := range directories {
-		tq.CreateDirectory(dir)
+		tq.Add(QueueItem{
+			Action: TmActionMkdir,
+			Path:   dir,
+		})
 	}
 
 	for _, file := range files {
-		tq.AddFile(file)
+		tq.Add(QueueItem{
+			Action: TmActionWrite,
+			Path:   file,
+		})
 	}
 }
 
@@ -47,8 +53,8 @@ func main() {
 	path := os.Args[2]
 
 	// Check if a valid mode is specified.
-	if mode != "serve" && mode != "receive" {
-		printUsage(fmt.Sprintf("%s is invalid mode. Supported modes are serve and receive.", mode))
+	if mode != "send" && mode != "receive" {
+		printUsage(fmt.Sprintf("%s is invalid mode. Supported modes are send and receive.", mode))
 	}
 
 	fInfo, err := os.Stat(path)
@@ -70,13 +76,18 @@ func main() {
 	ExitIfError(err)
 
 	switch mode {
-	case "serve":
+	case "send":
 		sender := NewSender()
 		err := sender.Connect(":9999")
 		ExitIfError(err)
 
 		txManager := NewTransferManager(sender)
-		initialSync(txManager)
+
+		fileWatcher := NewFileWatcher(txManager)
+		err = fileWatcher.Start()
+		ExitIfError(err)
+
+		initialSync(txManager, path)
 		txManager.Start()
 
 	case "receive":

@@ -50,19 +50,6 @@ func (r *Receiver) Start(address string) error {
 	return nil
 }
 
-// CheckFileExist (RPC) Check if a file exists.
-func (r *Receiver) CheckFileExist(ctx context.Context, req *FileExistRequest) (*FileExistResponse, error) {
-	if _, err := os.Stat(req.Path); os.IsNotExist(err) {
-		return &FileExistResponse{
-			Yes: false,
-		}, nil
-	}
-
-	return &FileExistResponse{
-		Yes: true,
-	}, nil
-}
-
 // GetFileChecksum (RPC) Get MD5 checksum of a file.
 func (r *Receiver) GetFileChecksum(ctx context.Context, req *FileRequest) (*FileChecksumResponse, error) {
 	checkSum, err := GetChecksum(req.GetPath())
@@ -75,20 +62,49 @@ func (r *Receiver) GetFileChecksum(ctx context.Context, req *FileRequest) (*File
 	}, nil
 }
 
-// DeleteFile (RPC) Delete a file.
-func (r *Receiver) DeleteFile(ctx context.Context, req *FileRequest) (*FileRequest, error) {
-	err := os.Remove(req.Path)
-	return req, err
+// Rename (RPC) Rename a file or directory.
+func (r *Receiver) Rename(ctx context.Context, req *RenameRequest) (*EmptyResponse, error) {
+	err := os.Rename(req.GetOldPath(), req.GetNewPath())
+
+	return &EmptyResponse{}, err
+}
+
+// Delete (RPC) Delete a file or directory.
+func (r *Receiver) Delete(ctx context.Context, req *FileRequest) (*EmptyResponse, error) {
+	err := os.RemoveAll(req.Path)
+	return &EmptyResponse{}, err
+}
+
+// Touch (RPC) Create a file if it doesn't exist and set correct permissions.
+func (r *Receiver) Touch(ctx context.Context, req *FileRequest) (*EmptyResponse, error) {
+	_, err := os.Stat(req.GetPath())
+
+	if err != nil && os.IsNotExist(err) {
+		fh, err := os.Create(req.GetPath())
+		fh.Close()
+
+		if err != nil {
+			return &EmptyResponse{}, err
+		}
+	}
+
+	return &EmptyResponse{}, nil
+}
+
+// Chmod (RPC) Chmod a file or directory.
+func (r *Receiver) Chmod(ctx context.Context, req *FileRequest) (*EmptyResponse, error) {
+	err := os.Chmod(req.GetPath(), os.FileMode(req.GetMode()))
+	return &EmptyResponse{}, err
 }
 
 // WriteFileBlock (RPC) Write a chunk of data to a file.
-func (r *Receiver) WriteFileBlock(ctx context.Context, req *WriteFileBlockRequest) (*FileExistResponse, error) {
+func (r *Receiver) WriteFileBlock(ctx context.Context, req *WriteFileBlockRequest) (*EmptyResponse, error) {
 	// TODO: We should cache the filedescriptor and don't reopen it between each call.
 	// We should also set the permission to the actual file permission on the sender end.
-	fh, err := os.OpenFile(req.GetFilePath(), os.O_WRONLY|os.O_CREATE, 0660)
+	fh, err := os.OpenFile(req.GetFilePath(), os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error opening %s: %s\n", req.GetFilePath(), err.Error())
-		return &FileExistResponse{}, err
+		return &EmptyResponse{}, err
 	}
 
 	defer fh.Close()
@@ -96,16 +112,16 @@ func (r *Receiver) WriteFileBlock(ctx context.Context, req *WriteFileBlockReques
 	_, err = fh.WriteAt(req.GetData(), req.GetOffset())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error writing %d bytes to %s @ offset %d: %s\n", req.GetSize(), req.GetFilePath(), req.GetOffset(), err.Error())
-		return &FileExistResponse{}, err
+		return &EmptyResponse{}, err
 	}
 
-	return &FileExistResponse{}, nil
+	return &EmptyResponse{}, nil
 }
 
 // TruncateFile (RPC) Truncate file at given size.
-func (r *Receiver) TruncateFile(ctx context.Context, req *TruncateFileRequest) (*TruncateFileRequest, error) {
+func (r *Receiver) TruncateFile(ctx context.Context, req *TruncateFileRequest) (*EmptyResponse, error) {
 	os.Truncate(req.GetPath(), req.GetSize())
-	return &TruncateFileRequest{}, nil
+	return &EmptyResponse{}, nil
 }
 
 // GetFileMeta (RPC) Get metadata of file.
@@ -171,23 +187,8 @@ func GetRemoteFileMeta(client ReceiverServiceClient, filePath string, blockSize 
 }
 
 // CreateDirectory (RPC) Create a directory.
-func (r *Receiver) CreateDirectory(ctx context.Context, req *FileRequest) (*FileRequest, error) {
+func (r *Receiver) CreateDirectory(ctx context.Context, req *FileRequest) (*EmptyResponse, error) {
 	// TODO:  Set correct permission.
 	err := os.MkdirAll(req.GetPath(), 0777)
-	return req, err
-}
-
-// DeleteDirectory (RPC) Delete a directory.
-func (r *Receiver) DeleteDirectory(ctx context.Context, req *FileRequest) (*FileRequest, error) {
-	pInfo, err := os.Stat(req.Path)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if pInfo.IsDir() {
-		err = os.Remove(req.GetPath())
-	}
-
-	return req, err
+	return &EmptyResponse{}, err
 }

@@ -6,16 +6,15 @@ syntax = "proto3";
 package main;
 
 service ReceiverService {
-  rpc CheckFileExist(FileExistRequest) returns(FileExistResponse) {}
   rpc GetFileChecksum(FileRequest) returns(FileChecksumResponse) {}
   rpc GetFileMeta(FileRequest) returns(FileResponse) {}
-
-  rpc WriteFileBlock(WriteFileBlockRequest) returns (FileExistResponse) {}
-  rpc TruncateFile(TruncateFileRequest) returns(TruncateFileRequest) {}
-  rpc DeleteFile(FileRequest) returns(FileRequest) {}
-
-  rpc CreateDirectory(FileRequest) returns(FileRequest) {}
-  rpc DeleteDirectory (FileRequest) returns(FileRequest) {}
+  rpc Touch(FileRequest) returns (EmptyResponse) {}
+  rpc Chmod(FileRequest) returns (EmptyResponse) {}
+  rpc CreateDirectory(FileRequest) returns(EmptyResponse) {}
+  rpc WriteFileBlock(WriteFileBlockRequest) returns (EmptyResponse) {}
+  rpc TruncateFile(TruncateFileRequest) returns(EmptyResponse) {}
+  rpc Rename (RenameRequest) returns(EmptyResponse) {}
+  rpc Delete (FileRequest) returns(EmptyResponse) {}
 }
 
 message BlockMetaType {
@@ -34,17 +33,17 @@ message FileResponse {
   string CheckSum = 5;
 }
 
-message FileExistRequest {
-  string Path = 1;
-}
-
-message FileExistResponse {
-  bool Yes = 1;
-}
+message EmptyResponse {}
 
 message FileRequest {
   string Path = 1;
   int64 BlockSize = 2;
+  uint32 Mode = 3;
+}
+
+message RenameRequest {
+  string OldPath = 1;
+  string NewPath = 2;
 }
 
 message TruncateFileRequest {

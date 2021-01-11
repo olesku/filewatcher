@@ -32,6 +32,7 @@ type BlockMeta struct {
 // FileMeta holds metadata about a file.
 type FileMeta struct {
 	Path      string
+	Mode      uint32
 	Handle    *os.File
 	Size      int64
 	BlockSize int64
@@ -54,13 +55,14 @@ func ReadFile(filePath string, blockSize int64) (*FileMeta, error) {
 		}
 
 		f.Size = fInfo.Size()
+		f.Mode = uint32(fInfo.Mode().Perm())
 		blockSize = int64(math.Ceil(float64(fInfo.Size()) / 100 * 10))
 		if blockSize > 1024000 {
 			blockSize = 1024000
 		}
 	}
 
-	if err := f.Read(filePath, blockSize); err != nil {
+	if err := f.ReadMeta(filePath, blockSize); err != nil {
 		return nil, err
 	}
 
@@ -105,9 +107,9 @@ func (f *FileMeta) GetBlockMeta(blockNumber int64) (*BlockMeta, error) {
 	return &f.Blocks[int(blockNumber)], nil
 }
 
-// Read a file and populate File object with (fileSize/blockSize) Blocks containing md5
-// checksums and their positional index.
-func (f *FileMeta) Read(filePath string, blockSize int64) (err error) {
+// ReadMeta Read a file and populate a File with metadata about the file and
+// its content.
+func (f *FileMeta) ReadMeta(filePath string, blockSize int64) (err error) {
 	f.Path = filePath
 
 	// Get filesize.
@@ -149,8 +151,7 @@ func (f *FileMeta) Read(filePath string, blockSize int64) (err error) {
 		nRead, err := fh.ReadAt(chunk, offset)
 
 		if err != nil && err != io.EOF {
-			fmt.Printf("Error reading block %d: %s\n", i, err.Error())
-			return err
+			return fmt.Errorf("Error reading block %d: %s", i, err.Error())
 		}
 
 		if nRead == 0 {
@@ -183,12 +184,21 @@ func (f *FileMeta) Close() {
 func GetMissingBlocks(file1 *FileMeta, file2 *FileMeta) []int64 {
 	var missingBlocks []int64
 
-	// Files are the same.
+	// File2 (remote) is empty or larger, return all blocks.
+	if file2.Size == 0 || file2.Size > file1.Size {
+		for i := int64(0); i < file1.NumBlocks; i++ {
+			missingBlocks = append(missingBlocks, i)
+		}
+
+		return missingBlocks
+	}
+
+	// Files are the same, return 0 blocks.
 	if file2.CheckSum == file1.CheckSum {
 		return []int64{}
 	}
 
-	// Check if any of the blocks at corresponding indexes has changed mismatching checksums.
+	// Check if any of the blocks at corresponding indexes has mismatching checksums.
 	// This diff will only be effective if the number of bytes at any given offset has not changed.
 	// Reason being that if bytes are added at one offset every following
 	// offset will be shifted. However in many cases this will save data.

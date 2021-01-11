@@ -182,16 +182,14 @@ func (x *FileResponse) GetCheckSum() string {
 	return ""
 }
 
-type FileExistRequest struct {
+type EmptyResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Path string `protobuf:"bytes,1,opt,name=Path,proto3" json:"Path,omitempty"`
 }
 
-func (x *FileExistRequest) Reset() {
-	*x = FileExistRequest{}
+func (x *EmptyResponse) Reset() {
+	*x = EmptyResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_receiver_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -199,13 +197,13 @@ func (x *FileExistRequest) Reset() {
 	}
 }
 
-func (x *FileExistRequest) String() string {
+func (x *EmptyResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FileExistRequest) ProtoMessage() {}
+func (*EmptyResponse) ProtoMessage() {}
 
-func (x *FileExistRequest) ProtoReflect() protoreflect.Message {
+func (x *EmptyResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_receiver_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -217,63 +215,9 @@ func (x *FileExistRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FileExistRequest.ProtoReflect.Descriptor instead.
-func (*FileExistRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use EmptyResponse.ProtoReflect.Descriptor instead.
+func (*EmptyResponse) Descriptor() ([]byte, []int) {
 	return file_receiver_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *FileExistRequest) GetPath() string {
-	if x != nil {
-		return x.Path
-	}
-	return ""
-}
-
-type FileExistResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Yes bool `protobuf:"varint,1,opt,name=Yes,proto3" json:"Yes,omitempty"`
-}
-
-func (x *FileExistResponse) Reset() {
-	*x = FileExistResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_receiver_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *FileExistResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*FileExistResponse) ProtoMessage() {}
-
-func (x *FileExistResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_receiver_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use FileExistResponse.ProtoReflect.Descriptor instead.
-func (*FileExistResponse) Descriptor() ([]byte, []int) {
-	return file_receiver_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *FileExistResponse) GetYes() bool {
-	if x != nil {
-		return x.Yes
-	}
-	return false
 }
 
 type FileRequest struct {
@@ -283,12 +227,13 @@ type FileRequest struct {
 
 	Path      string `protobuf:"bytes,1,opt,name=Path,proto3" json:"Path,omitempty"`
 	BlockSize int64  `protobuf:"varint,2,opt,name=BlockSize,proto3" json:"BlockSize,omitempty"`
+	Mode      uint32 `protobuf:"varint,3,opt,name=Mode,proto3" json:"Mode,omitempty"`
 }
 
 func (x *FileRequest) Reset() {
 	*x = FileRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_receiver_proto_msgTypes[4]
+		mi := &file_receiver_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -301,7 +246,7 @@ func (x *FileRequest) String() string {
 func (*FileRequest) ProtoMessage() {}
 
 func (x *FileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_receiver_proto_msgTypes[4]
+	mi := &file_receiver_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -314,7 +259,7 @@ func (x *FileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileRequest.ProtoReflect.Descriptor instead.
 func (*FileRequest) Descriptor() ([]byte, []int) {
-	return file_receiver_proto_rawDescGZIP(), []int{4}
+	return file_receiver_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *FileRequest) GetPath() string {
@@ -329,6 +274,68 @@ func (x *FileRequest) GetBlockSize() int64 {
 		return x.BlockSize
 	}
 	return 0
+}
+
+func (x *FileRequest) GetMode() uint32 {
+	if x != nil {
+		return x.Mode
+	}
+	return 0
+}
+
+type RenameRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OldPath string `protobuf:"bytes,1,opt,name=OldPath,proto3" json:"OldPath,omitempty"`
+	NewPath string `protobuf:"bytes,2,opt,name=NewPath,proto3" json:"NewPath,omitempty"`
+}
+
+func (x *RenameRequest) Reset() {
+	*x = RenameRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_receiver_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RenameRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RenameRequest) ProtoMessage() {}
+
+func (x *RenameRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_receiver_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RenameRequest.ProtoReflect.Descriptor instead.
+func (*RenameRequest) Descriptor() ([]byte, []int) {
+	return file_receiver_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RenameRequest) GetOldPath() string {
+	if x != nil {
+		return x.OldPath
+	}
+	return ""
+}
+
+func (x *RenameRequest) GetNewPath() string {
+	if x != nil {
+		return x.NewPath
+	}
+	return ""
 }
 
 type TruncateFileRequest struct {
@@ -526,64 +533,67 @@ var file_receiver_proto_rawDesc = []byte{
 	0x63, 0x6b, 0x4d, 0x65, 0x74, 0x61, 0x54, 0x79, 0x70, 0x65, 0x52, 0x09, 0x42, 0x6c, 0x6f, 0x63,
 	0x6b, 0x4d, 0x65, 0x74, 0x61, 0x12, 0x1a, 0x0a, 0x08, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x53, 0x75,
 	0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x53, 0x75,
-	0x6d, 0x22, 0x26, 0x0a, 0x10, 0x46, 0x69, 0x6c, 0x65, 0x45, 0x78, 0x69, 0x73, 0x74, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x50, 0x61, 0x74, 0x68, 0x22, 0x25, 0x0a, 0x11, 0x46, 0x69, 0x6c,
-	0x65, 0x45, 0x78, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10,
-	0x0a, 0x03, 0x59, 0x65, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x03, 0x59, 0x65, 0x73,
-	0x22, 0x3f, 0x0a, 0x0b, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x12, 0x0a, 0x04, 0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x50,
-	0x61, 0x74, 0x68, 0x12, 0x1c, 0x0a, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x53, 0x69, 0x7a, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x53, 0x69, 0x7a,
-	0x65, 0x22, 0x3d, 0x0a, 0x13, 0x54, 0x72, 0x75, 0x6e, 0x63, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x50, 0x61, 0x74, 0x68,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x50, 0x61, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04,
-	0x53, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x53, 0x69, 0x7a, 0x65,
-	0x22, 0x32, 0x0a, 0x14, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x73, 0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x43, 0x68, 0x65, 0x63,
-	0x6b, 0x73, 0x75, 0x6d, 0x22, 0x73, 0x0a, 0x15, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c,
-	0x65, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a,
-	0x08, 0x46, 0x69, 0x6c, 0x65, 0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x46, 0x69, 0x6c, 0x65, 0x50, 0x61, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x66, 0x66,
-	0x73, 0x65, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x32, 0x90, 0x04, 0x0a, 0x0f, 0x52, 0x65,
-	0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x43, 0x0a,
-	0x0e, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x46, 0x69, 0x6c, 0x65, 0x45, 0x78, 0x69, 0x73, 0x74, 0x12,
-	0x16, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x45, 0x78, 0x69, 0x73, 0x74,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46,
-	0x69, 0x6c, 0x65, 0x45, 0x78, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x12, 0x42, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x68, 0x65,
-	0x63, 0x6b, 0x73, 0x75, 0x6d, 0x12, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e,
-	0x46, 0x69, 0x6c, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x36, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x46, 0x69, 0x6c,
-	0x65, 0x4d, 0x65, 0x74, 0x61, 0x12, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e,
-	0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x48,
-	0x0a, 0x0e, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
-	0x12, 0x1b, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c,
-	0x65, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e,
-	0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x45, 0x78, 0x69, 0x73, 0x74, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x0c, 0x54, 0x72, 0x75, 0x6e,
-	0x63, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x19, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e,
+	0x6d, 0x22, 0x0f, 0x0a, 0x0d, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x53, 0x0a, 0x0b, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x12, 0x0a, 0x04, 0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x50, 0x61, 0x74, 0x68, 0x12, 0x1c, 0x0a, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x53, 0x69,
+	0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x53,
+	0x69, 0x7a, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x4d, 0x6f, 0x64, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x04, 0x4d, 0x6f, 0x64, 0x65, 0x22, 0x43, 0x0a, 0x0d, 0x52, 0x65, 0x6e, 0x61, 0x6d,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x4f, 0x6c, 0x64, 0x50,
+	0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x4f, 0x6c, 0x64, 0x50, 0x61,
+	0x74, 0x68, 0x12, 0x18, 0x0a, 0x07, 0x4e, 0x65, 0x77, 0x50, 0x61, 0x74, 0x68, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x4e, 0x65, 0x77, 0x50, 0x61, 0x74, 0x68, 0x22, 0x3d, 0x0a, 0x13,
 	0x54, 0x72, 0x75, 0x6e, 0x63, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x54, 0x72, 0x75, 0x6e, 0x63,
-	0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x00,
-	0x12, 0x34, 0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x11,
-	0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
-	0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e,
-	0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x6d,
-	0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22,
-	0x00, 0x12, 0x39, 0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x44, 0x69, 0x72, 0x65, 0x63,
-	0x74, 0x6f, 0x72, 0x79, 0x12, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46,
-	0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x00, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x50, 0x61, 0x74, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x53, 0x69, 0x7a, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x53, 0x69, 0x7a, 0x65, 0x22, 0x32, 0x0a, 0x14, 0x46,
+	0x69, 0x6c, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x22,
+	0x73, 0x0a, 0x15, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x42, 0x6c, 0x6f, 0x63,
+	0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x46, 0x69, 0x6c, 0x65,
+	0x50, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x46, 0x69, 0x6c, 0x65,
+	0x50, 0x61, 0x74, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x6f, 0x66, 0x66, 0x73, 0x65, 0x74, 0x12, 0x12, 0x0a, 0x04,
+	0x73, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x32, 0xa2, 0x04, 0x0a, 0x0f, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65,
+	0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x42, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x46,
+	0x69, 0x6c, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73, 0x75, 0x6d, 0x12, 0x11, 0x2e, 0x6d, 0x61,
+	0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a,
+	0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x73,
+	0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x36, 0x0a, 0x0b,
+	0x47, 0x65, 0x74, 0x46, 0x69, 0x6c, 0x65, 0x4d, 0x65, 0x74, 0x61, 0x12, 0x11, 0x2e, 0x6d, 0x61,
+	0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12,
+	0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x12, 0x31, 0x0a, 0x05, 0x54, 0x6f, 0x75, 0x63, 0x68, 0x12, 0x11, 0x2e,
+	0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x31, 0x0a, 0x05, 0x43, 0x68, 0x6d, 0x6f, 0x64,
+	0x12, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3b, 0x0a, 0x0f, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x44, 0x69, 0x72, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x11, 0x2e,
+	0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x44, 0x0a, 0x0e, 0x57, 0x72, 0x69, 0x74, 0x65,
+	0x46, 0x69, 0x6c, 0x65, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x12, 0x1b, 0x2e, 0x6d, 0x61, 0x69, 0x6e,
+	0x2e, 0x57, 0x72, 0x69, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x40, 0x0a,
+	0x0c, 0x54, 0x72, 0x75, 0x6e, 0x63, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x12, 0x19, 0x2e,
+	0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x54, 0x72, 0x75, 0x6e, 0x63, 0x61, 0x74, 0x65, 0x46, 0x69, 0x6c,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e,
+	0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
+	0x34, 0x0a, 0x06, 0x52, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e,
+	0x2e, 0x52, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13,
+	0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x32, 0x0a, 0x06, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12,
+	0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x13, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -602,36 +612,38 @@ var file_receiver_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_receiver_proto_goTypes = []interface{}{
 	(*BlockMetaType)(nil),         // 0: main.BlockMetaType
 	(*FileResponse)(nil),          // 1: main.FileResponse
-	(*FileExistRequest)(nil),      // 2: main.FileExistRequest
-	(*FileExistResponse)(nil),     // 3: main.FileExistResponse
-	(*FileRequest)(nil),           // 4: main.FileRequest
+	(*EmptyResponse)(nil),         // 2: main.EmptyResponse
+	(*FileRequest)(nil),           // 3: main.FileRequest
+	(*RenameRequest)(nil),         // 4: main.RenameRequest
 	(*TruncateFileRequest)(nil),   // 5: main.TruncateFileRequest
 	(*FileChecksumResponse)(nil),  // 6: main.FileChecksumResponse
 	(*WriteFileBlockRequest)(nil), // 7: main.WriteFileBlockRequest
 }
 var file_receiver_proto_depIdxs = []int32{
-	0, // 0: main.FileResponse.BlockMeta:type_name -> main.BlockMetaType
-	2, // 1: main.ReceiverService.CheckFileExist:input_type -> main.FileExistRequest
-	4, // 2: main.ReceiverService.GetFileChecksum:input_type -> main.FileRequest
-	4, // 3: main.ReceiverService.GetFileMeta:input_type -> main.FileRequest
-	7, // 4: main.ReceiverService.WriteFileBlock:input_type -> main.WriteFileBlockRequest
-	5, // 5: main.ReceiverService.TruncateFile:input_type -> main.TruncateFileRequest
-	4, // 6: main.ReceiverService.DeleteFile:input_type -> main.FileRequest
-	4, // 7: main.ReceiverService.CreateDirectory:input_type -> main.FileRequest
-	4, // 8: main.ReceiverService.DeleteDirectory:input_type -> main.FileRequest
-	3, // 9: main.ReceiverService.CheckFileExist:output_type -> main.FileExistResponse
-	6, // 10: main.ReceiverService.GetFileChecksum:output_type -> main.FileChecksumResponse
-	1, // 11: main.ReceiverService.GetFileMeta:output_type -> main.FileResponse
-	3, // 12: main.ReceiverService.WriteFileBlock:output_type -> main.FileExistResponse
-	5, // 13: main.ReceiverService.TruncateFile:output_type -> main.TruncateFileRequest
-	4, // 14: main.ReceiverService.DeleteFile:output_type -> main.FileRequest
-	4, // 15: main.ReceiverService.CreateDirectory:output_type -> main.FileRequest
-	4, // 16: main.ReceiverService.DeleteDirectory:output_type -> main.FileRequest
-	9, // [9:17] is the sub-list for method output_type
-	1, // [1:9] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0,  // 0: main.FileResponse.BlockMeta:type_name -> main.BlockMetaType
+	3,  // 1: main.ReceiverService.GetFileChecksum:input_type -> main.FileRequest
+	3,  // 2: main.ReceiverService.GetFileMeta:input_type -> main.FileRequest
+	3,  // 3: main.ReceiverService.Touch:input_type -> main.FileRequest
+	3,  // 4: main.ReceiverService.Chmod:input_type -> main.FileRequest
+	3,  // 5: main.ReceiverService.CreateDirectory:input_type -> main.FileRequest
+	7,  // 6: main.ReceiverService.WriteFileBlock:input_type -> main.WriteFileBlockRequest
+	5,  // 7: main.ReceiverService.TruncateFile:input_type -> main.TruncateFileRequest
+	4,  // 8: main.ReceiverService.Rename:input_type -> main.RenameRequest
+	3,  // 9: main.ReceiverService.Delete:input_type -> main.FileRequest
+	6,  // 10: main.ReceiverService.GetFileChecksum:output_type -> main.FileChecksumResponse
+	1,  // 11: main.ReceiverService.GetFileMeta:output_type -> main.FileResponse
+	2,  // 12: main.ReceiverService.Touch:output_type -> main.EmptyResponse
+	2,  // 13: main.ReceiverService.Chmod:output_type -> main.EmptyResponse
+	2,  // 14: main.ReceiverService.CreateDirectory:output_type -> main.EmptyResponse
+	2,  // 15: main.ReceiverService.WriteFileBlock:output_type -> main.EmptyResponse
+	2,  // 16: main.ReceiverService.TruncateFile:output_type -> main.EmptyResponse
+	2,  // 17: main.ReceiverService.Rename:output_type -> main.EmptyResponse
+	2,  // 18: main.ReceiverService.Delete:output_type -> main.EmptyResponse
+	10, // [10:19] is the sub-list for method output_type
+	1,  // [1:10] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_receiver_proto_init() }
@@ -665,7 +677,7 @@ func file_receiver_proto_init() {
 			}
 		}
 		file_receiver_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileExistRequest); i {
+			switch v := v.(*EmptyResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -677,7 +689,7 @@ func file_receiver_proto_init() {
 			}
 		}
 		file_receiver_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileExistResponse); i {
+			switch v := v.(*FileRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -689,7 +701,7 @@ func file_receiver_proto_init() {
 			}
 		}
 		file_receiver_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileRequest); i {
+			switch v := v.(*RenameRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -769,14 +781,15 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ReceiverServiceClient interface {
-	CheckFileExist(ctx context.Context, in *FileExistRequest, opts ...grpc.CallOption) (*FileExistResponse, error)
 	GetFileChecksum(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileChecksumResponse, error)
 	GetFileMeta(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileResponse, error)
-	WriteFileBlock(ctx context.Context, in *WriteFileBlockRequest, opts ...grpc.CallOption) (*FileExistResponse, error)
-	TruncateFile(ctx context.Context, in *TruncateFileRequest, opts ...grpc.CallOption) (*TruncateFileRequest, error)
-	DeleteFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileRequest, error)
-	CreateDirectory(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileRequest, error)
-	DeleteDirectory(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileRequest, error)
+	Touch(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	Chmod(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	CreateDirectory(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	WriteFileBlock(ctx context.Context, in *WriteFileBlockRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	TruncateFile(ctx context.Context, in *TruncateFileRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	Rename(ctx context.Context, in *RenameRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
+	Delete(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error)
 }
 
 type receiverServiceClient struct {
@@ -785,15 +798,6 @@ type receiverServiceClient struct {
 
 func NewReceiverServiceClient(cc grpc.ClientConnInterface) ReceiverServiceClient {
 	return &receiverServiceClient{cc}
-}
-
-func (c *receiverServiceClient) CheckFileExist(ctx context.Context, in *FileExistRequest, opts ...grpc.CallOption) (*FileExistResponse, error) {
-	out := new(FileExistResponse)
-	err := c.cc.Invoke(ctx, "/main.ReceiverService/CheckFileExist", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *receiverServiceClient) GetFileChecksum(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileChecksumResponse, error) {
@@ -814,35 +818,26 @@ func (c *receiverServiceClient) GetFileMeta(ctx context.Context, in *FileRequest
 	return out, nil
 }
 
-func (c *receiverServiceClient) WriteFileBlock(ctx context.Context, in *WriteFileBlockRequest, opts ...grpc.CallOption) (*FileExistResponse, error) {
-	out := new(FileExistResponse)
-	err := c.cc.Invoke(ctx, "/main.ReceiverService/WriteFileBlock", in, out, opts...)
+func (c *receiverServiceClient) Touch(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, "/main.ReceiverService/Touch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *receiverServiceClient) TruncateFile(ctx context.Context, in *TruncateFileRequest, opts ...grpc.CallOption) (*TruncateFileRequest, error) {
-	out := new(TruncateFileRequest)
-	err := c.cc.Invoke(ctx, "/main.ReceiverService/TruncateFile", in, out, opts...)
+func (c *receiverServiceClient) Chmod(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, "/main.ReceiverService/Chmod", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *receiverServiceClient) DeleteFile(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileRequest, error) {
-	out := new(FileRequest)
-	err := c.cc.Invoke(ctx, "/main.ReceiverService/DeleteFile", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *receiverServiceClient) CreateDirectory(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileRequest, error) {
-	out := new(FileRequest)
+func (c *receiverServiceClient) CreateDirectory(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
 	err := c.cc.Invoke(ctx, "/main.ReceiverService/CreateDirectory", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -850,9 +845,36 @@ func (c *receiverServiceClient) CreateDirectory(ctx context.Context, in *FileReq
 	return out, nil
 }
 
-func (c *receiverServiceClient) DeleteDirectory(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*FileRequest, error) {
-	out := new(FileRequest)
-	err := c.cc.Invoke(ctx, "/main.ReceiverService/DeleteDirectory", in, out, opts...)
+func (c *receiverServiceClient) WriteFileBlock(ctx context.Context, in *WriteFileBlockRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, "/main.ReceiverService/WriteFileBlock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *receiverServiceClient) TruncateFile(ctx context.Context, in *TruncateFileRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, "/main.ReceiverService/TruncateFile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *receiverServiceClient) Rename(ctx context.Context, in *RenameRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, "/main.ReceiverService/Rename", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *receiverServiceClient) Delete(ctx context.Context, in *FileRequest, opts ...grpc.CallOption) (*EmptyResponse, error) {
+	out := new(EmptyResponse)
+	err := c.cc.Invoke(ctx, "/main.ReceiverService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -861,65 +883,51 @@ func (c *receiverServiceClient) DeleteDirectory(ctx context.Context, in *FileReq
 
 // ReceiverServiceServer is the server API for ReceiverService service.
 type ReceiverServiceServer interface {
-	CheckFileExist(context.Context, *FileExistRequest) (*FileExistResponse, error)
 	GetFileChecksum(context.Context, *FileRequest) (*FileChecksumResponse, error)
 	GetFileMeta(context.Context, *FileRequest) (*FileResponse, error)
-	WriteFileBlock(context.Context, *WriteFileBlockRequest) (*FileExistResponse, error)
-	TruncateFile(context.Context, *TruncateFileRequest) (*TruncateFileRequest, error)
-	DeleteFile(context.Context, *FileRequest) (*FileRequest, error)
-	CreateDirectory(context.Context, *FileRequest) (*FileRequest, error)
-	DeleteDirectory(context.Context, *FileRequest) (*FileRequest, error)
+	Touch(context.Context, *FileRequest) (*EmptyResponse, error)
+	Chmod(context.Context, *FileRequest) (*EmptyResponse, error)
+	CreateDirectory(context.Context, *FileRequest) (*EmptyResponse, error)
+	WriteFileBlock(context.Context, *WriteFileBlockRequest) (*EmptyResponse, error)
+	TruncateFile(context.Context, *TruncateFileRequest) (*EmptyResponse, error)
+	Rename(context.Context, *RenameRequest) (*EmptyResponse, error)
+	Delete(context.Context, *FileRequest) (*EmptyResponse, error)
 }
 
 // UnimplementedReceiverServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedReceiverServiceServer struct {
 }
 
-func (*UnimplementedReceiverServiceServer) CheckFileExist(context.Context, *FileExistRequest) (*FileExistResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CheckFileExist not implemented")
-}
 func (*UnimplementedReceiverServiceServer) GetFileChecksum(context.Context, *FileRequest) (*FileChecksumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFileChecksum not implemented")
 }
 func (*UnimplementedReceiverServiceServer) GetFileMeta(context.Context, *FileRequest) (*FileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFileMeta not implemented")
 }
-func (*UnimplementedReceiverServiceServer) WriteFileBlock(context.Context, *WriteFileBlockRequest) (*FileExistResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WriteFileBlock not implemented")
+func (*UnimplementedReceiverServiceServer) Touch(context.Context, *FileRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Touch not implemented")
 }
-func (*UnimplementedReceiverServiceServer) TruncateFile(context.Context, *TruncateFileRequest) (*TruncateFileRequest, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TruncateFile not implemented")
+func (*UnimplementedReceiverServiceServer) Chmod(context.Context, *FileRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Chmod not implemented")
 }
-func (*UnimplementedReceiverServiceServer) DeleteFile(context.Context, *FileRequest) (*FileRequest, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteFile not implemented")
-}
-func (*UnimplementedReceiverServiceServer) CreateDirectory(context.Context, *FileRequest) (*FileRequest, error) {
+func (*UnimplementedReceiverServiceServer) CreateDirectory(context.Context, *FileRequest) (*EmptyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDirectory not implemented")
 }
-func (*UnimplementedReceiverServiceServer) DeleteDirectory(context.Context, *FileRequest) (*FileRequest, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteDirectory not implemented")
+func (*UnimplementedReceiverServiceServer) WriteFileBlock(context.Context, *WriteFileBlockRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WriteFileBlock not implemented")
+}
+func (*UnimplementedReceiverServiceServer) TruncateFile(context.Context, *TruncateFileRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TruncateFile not implemented")
+}
+func (*UnimplementedReceiverServiceServer) Rename(context.Context, *RenameRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Rename not implemented")
+}
+func (*UnimplementedReceiverServiceServer) Delete(context.Context, *FileRequest) (*EmptyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 
 func RegisterReceiverServiceServer(s *grpc.Server, srv ReceiverServiceServer) {
 	s.RegisterService(&_ReceiverService_serviceDesc, srv)
-}
-
-func _ReceiverService_CheckFileExist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FileExistRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ReceiverServiceServer).CheckFileExist(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/main.ReceiverService/CheckFileExist",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReceiverServiceServer).CheckFileExist(ctx, req.(*FileExistRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _ReceiverService_GetFileChecksum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -954,6 +962,60 @@ func _ReceiverService_GetFileMeta_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ReceiverServiceServer).GetFileMeta(ctx, req.(*FileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReceiverService_Touch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReceiverServiceServer).Touch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.ReceiverService/Touch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReceiverServiceServer).Touch(ctx, req.(*FileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReceiverService_Chmod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReceiverServiceServer).Chmod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.ReceiverService/Chmod",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReceiverServiceServer).Chmod(ctx, req.(*FileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ReceiverService_CreateDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReceiverServiceServer).CreateDirectory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.ReceiverService/CreateDirectory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReceiverServiceServer).CreateDirectory(ctx, req.(*FileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -994,56 +1056,38 @@ func _ReceiverService_TruncateFile_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReceiverService_DeleteFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FileRequest)
+func _ReceiverService_Rename_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RenameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReceiverServiceServer).DeleteFile(ctx, in)
+		return srv.(ReceiverServiceServer).Rename(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.ReceiverService/DeleteFile",
+		FullMethod: "/main.ReceiverService/Rename",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReceiverServiceServer).DeleteFile(ctx, req.(*FileRequest))
+		return srv.(ReceiverServiceServer).Rename(ctx, req.(*RenameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReceiverService_CreateDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ReceiverService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReceiverServiceServer).CreateDirectory(ctx, in)
+		return srv.(ReceiverServiceServer).Delete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.ReceiverService/CreateDirectory",
+		FullMethod: "/main.ReceiverService/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReceiverServiceServer).CreateDirectory(ctx, req.(*FileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ReceiverService_DeleteDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ReceiverServiceServer).DeleteDirectory(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/main.ReceiverService/DeleteDirectory",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReceiverServiceServer).DeleteDirectory(ctx, req.(*FileRequest))
+		return srv.(ReceiverServiceServer).Delete(ctx, req.(*FileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1053,16 +1097,24 @@ var _ReceiverService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ReceiverServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CheckFileExist",
-			Handler:    _ReceiverService_CheckFileExist_Handler,
-		},
-		{
 			MethodName: "GetFileChecksum",
 			Handler:    _ReceiverService_GetFileChecksum_Handler,
 		},
 		{
 			MethodName: "GetFileMeta",
 			Handler:    _ReceiverService_GetFileMeta_Handler,
+		},
+		{
+			MethodName: "Touch",
+			Handler:    _ReceiverService_Touch_Handler,
+		},
+		{
+			MethodName: "Chmod",
+			Handler:    _ReceiverService_Chmod_Handler,
+		},
+		{
+			MethodName: "CreateDirectory",
+			Handler:    _ReceiverService_CreateDirectory_Handler,
 		},
 		{
 			MethodName: "WriteFileBlock",
@@ -1073,16 +1125,12 @@ var _ReceiverService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ReceiverService_TruncateFile_Handler,
 		},
 		{
-			MethodName: "DeleteFile",
-			Handler:    _ReceiverService_DeleteFile_Handler,
+			MethodName: "Rename",
+			Handler:    _ReceiverService_Rename_Handler,
 		},
 		{
-			MethodName: "CreateDirectory",
-			Handler:    _ReceiverService_CreateDirectory_Handler,
-		},
-		{
-			MethodName: "DeleteDirectory",
-			Handler:    _ReceiverService_DeleteDirectory_Handler,
+			MethodName: "Delete",
+			Handler:    _ReceiverService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

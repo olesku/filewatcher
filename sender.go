@@ -20,12 +20,12 @@ type Sender struct {
 	isConnected bool
 }
 
-// NewSender Create news instance of Sender.
+// NewSender Create new instance of Sender.
 func NewSender() *Sender {
 	return &Sender{}
 }
 
-// Connect - Connect to remote.
+// Connect to remote.
 func (s *Sender) Connect(address string) error {
 	s.isConnected = false
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
@@ -40,49 +40,69 @@ func (s *Sender) Connect(address string) error {
 	return nil
 }
 
-// SyncFile Send a file to the remote.
-func (s *Sender) SyncFile(filePath string) {
+// Sync Send a file to the remote.
+func (s *Sender) Sync(filePath string) error {
+	// First compare checksums and exit early if the files are the same.
+	localSum, err := GetChecksum(filePath)
+
+	if err != nil {
+		return fmt.Errorf("Failed to get checksum for '%s': %s", filePath, err.Error())
+	}
+
+	remoteSum, err := s.client.GetFileChecksum(context.Background(), &FileRequest{
+		Path: filePath,
+	})
+
+	if err == nil && localSum == remoteSum.GetChecksum() {
+		return nil
+	}
+
 	// Get metadata for the file on the sender end.
 	localFile, err := ReadFile(filePath, 0)
 
 	if err != nil {
-		log.Printf("Failed to read %s: %s\n", filePath, err.Error())
-		return
+		return fmt.Errorf("Failed to read '%s': %s", filePath, err.Error())
 	}
 
+	// Touch file if it doesn't exist.
+	s.Touch(filePath)
+
+	// Set correct permissions.
+	s.Chmod(filePath, localFile.Mode)
+
 	defer localFile.Close()
+
+	// File has no content yet, so we only create it.
+	if localFile.Size == 0 {
+		return nil
+	}
 
 	// Get metadata for the file on the receiver end.
 	var missingBlocks []int64
 	remoteFile, err := GetRemoteFileMeta(s.client, filePath, localFile.BlockSize)
 	if err != nil {
-		// If file was not found on remote end we should just write all blocks.
+		log.Printf("File %s was not found on remote.\n", filePath)
+		// If file was not found on remote end we should write all blocks.
 		for i := int64(0); i < localFile.NumBlocks; i++ {
 			missingBlocks = append(missingBlocks, i)
 		}
 	} else {
-		// Compare the file on the remote if it exists and return
-		// the missing blocks. If file does not exist on remote
-		// all blocks is returned.
+		// Compare the file on the remote and return the missing blocks.
 		missingBlocks = GetMissingBlocks(localFile, remoteFile)
 	}
 
-	if len(missingBlocks) > 0 {
-		log.Printf("Transferring %s\n", filePath)
-	}
+	log.Printf("File %s: Writing blocks: %v\nBlocksize: %d\n", filePath, missingBlocks, localFile.BlockSize)
 
 	// Write blocks returned above to the remote.
 	for _, blockNum := range missingBlocks {
 		blockMeta, err := localFile.GetBlockMeta(blockNum)
 		if err != nil {
-			log.Printf("Failed to get meta for block #%d in file %s: %s\n", blockNum, filePath, err.Error())
-			return
+			return fmt.Errorf("Failed to get meta for block #%d in file '%s': %s", blockNum, filePath, err.Error())
 		}
 
 		blockData, err := localFile.GetBlockData(blockNum)
 		if err != nil {
-			log.Printf("Failed to get block data for block #%d in file %s: %s\n", blockNum, filePath, err.Error())
-			return
+			return fmt.Errorf("Failed to get block data for block #%d in file '%s': %s", blockNum, filePath, err.Error())
 		}
 
 		//fmt.Printf("Writing block #%d (%d bytes)\n", blockNum, blockMeta.Size)
@@ -94,8 +114,7 @@ func (s *Sender) SyncFile(filePath string) {
 		})
 
 		if err != nil {
-			log.Printf("Failed to write to %s: %s\n", filePath, err.Error())
-			return
+			return fmt.Errorf("Failed to write to '%s': %s", filePath, err.Error())
 		}
 	}
 
@@ -106,12 +125,36 @@ func (s *Sender) SyncFile(filePath string) {
 	})
 
 	if err != nil {
-		log.Printf("Failed to truncate %s at %d bytes: %s\n", filePath, localFile.Size, err.Error())
-		return
+		return fmt.Errorf("Failed to truncate file '%s' at %d bytes: %s", filePath, localFile.Size, err.Error())
 	}
+
+	return nil
 }
 
-// CreateDirectory ..
+// Touch file if it doesn't exist.
+func (s *Sender) Touch(path string) error {
+	_, err := s.client.Touch(context.Background(), &FileRequest{
+		Path: path,
+	})
+
+	return err
+}
+
+// Chmod Chmod a file or directory.
+func (s *Sender) Chmod(path string, mode uint32) error {
+	_, err := s.client.Chmod(context.Background(), &FileRequest{
+		Path: path,
+		Mode: mode,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CreateDirectory Create a directory on the remote.
 func (s *Sender) CreateDirectory(path string) error {
 	_, err := s.client.CreateDirectory(context.Background(), &FileRequest{Path: path})
 
@@ -120,4 +163,25 @@ func (s *Sender) CreateDirectory(path string) error {
 	}
 
 	return nil
+}
+
+// Delete file or directory.
+func (s *Sender) Delete(path string) error {
+	_, err := s.client.Delete(context.Background(), &FileRequest{Path: path})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Rename file or directory.
+func (s *Sender) Rename(oldPath string, newPath string) error {
+	_, err := s.client.Rename(context.Background(), &RenameRequest{
+		OldPath: oldPath,
+		NewPath: newPath,
+	})
+
+	return err
 }

@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // GetChecksum Get MD5 checksum for the contents in a file.
@@ -69,4 +70,33 @@ func ListFiles(path string) []string {
 	filepath.Walk(path, walkFunc)
 
 	return fileList
+}
+
+// IsDirectory Check if given path is a directory.
+func IsDirectory(path string) bool {
+	fInfo, err := os.Stat(path)
+
+	if err != nil {
+		return false
+	}
+
+	if fInfo.IsDir() {
+		return true
+	}
+
+	return false
+}
+
+// StripBasepath from path.
+func StripBasepath(path string) (string, error) {
+	cwd, err := os.Getwd()
+
+	if err != nil {
+		return path, err
+	}
+
+	path = strings.TrimPrefix(path, cwd)
+	path = strings.TrimPrefix(path, "/")
+
+	return path, nil
 }
