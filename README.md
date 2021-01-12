@@ -21,12 +21,19 @@ docker run --net=host --tm -it <extra args> filewatcher
 
 ### Receiver
 ```bash
-./filewatcher receive <target-path>
+./filewatcher receive <target-path> <listen-port>
+
+# Example:
+mkdir /tmp/syncdir && \
+./filewatcher receive /tmp/syncdir 9090
 ```
 
 ### Sender
 ```bash
-./filewatcher send <path-to-sync>
+./filewatcher sync <path-to-sync> <remote-host> <port>
+
+# Example:
+./filewatcher sync . 127.0.0.1 9090
 ```
 
 

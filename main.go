@@ -6,21 +6,32 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 )
 
 func printUsage(msg string) {
 	fmt.Fprintf(os.Stderr, "Usage:\n")
 	fmt.Fprintf(os.Stderr, "\tSynchronize path to remote target:\n")
-	fmt.Fprintf(os.Stderr, "\t\t%s <send> <path> <remote-host> <port>\n\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "\t\t%s sync <path-to-sync> <remote-host> <port>\n\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "\tReceive data (listen-mode):\n")
-	fmt.Fprintf(os.Stderr, "\t\t%s <receive> <path> <listen-port>\n\n", os.Args[0])
+	fmt.Fprintf(os.Stderr, "\t\t%s receive <target-path> <listen-port>\n\n", os.Args[0])
 
 	if len(msg) > 0 {
 		fmt.Fprintf(os.Stderr, "Error: %s\n\n", msg)
 	}
 
 	os.Exit(1)
+}
+
+func isValidPort(portStr string) bool {
+	n, err := strconv.Atoi(portStr)
+	if err != nil || (n < 1 || n > 65535) {
+		return false
+	}
+
+	return true
 }
 
 // Initial file synchronization called before we start
@@ -44,6 +55,54 @@ func initialSync(tq *TransferManager, path string) {
 	}
 }
 
+// sync command entrypoint.
+func syncCmd(path string) {
+	remote := "127.0.0.1:9090"
+
+	if len(os.Args) == 4 {
+		remote = fmt.Sprintf("%s:9090", os.Args[3])
+	} else if len(os.Args) == 5 {
+		if !isValidPort(os.Args[4]) {
+			printUsage(fmt.Sprintf("%s is not a valid port number.", os.Args[4]))
+		}
+		remote = fmt.Sprintf("%s:%s", os.Args[3], os.Args[4])
+	}
+
+	log.Printf("Connecting to %s\n", remote)
+
+	sender := NewSender()
+	err := sender.Connect(remote)
+	ExitIfError(err)
+
+	txManager := NewTransferManager(sender)
+
+	fileWatcher := NewFileWatcher(txManager)
+	err = fileWatcher.Start()
+	ExitIfError(err)
+
+	initialSync(txManager, path)
+	txManager.Start()
+}
+
+// receive command entrypoint.
+func receiveCmd(path string) {
+	listenAddr := ":9090"
+
+	if len(os.Args) == 4 {
+		if !isValidPort(os.Args[3]) {
+			printUsage(fmt.Sprintf("%s is not a valid port number.", os.Args[4]))
+		}
+
+		listenAddr = fmt.Sprintf(":%s", os.Args[3])
+	}
+
+	receiver := NewReceiver()
+
+	log.Printf("Listening on %s\n", listenAddr)
+	err := receiver.Start(listenAddr)
+	ExitIfError(err)
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		printUsage("Not enough arguments.")
@@ -53,8 +112,8 @@ func main() {
 	path := os.Args[2]
 
 	// Check if a valid mode is specified.
-	if mode != "send" && mode != "receive" {
-		printUsage(fmt.Sprintf("%s is invalid mode. Supported modes are send and receive.", mode))
+	if mode != "sync" && mode != "receive" {
+		printUsage(fmt.Sprintf("%s is invalid mode. Supported modes are sync and receive.", mode))
 	}
 
 	fInfo, err := os.Stat(path)
@@ -76,23 +135,10 @@ func main() {
 	ExitIfError(err)
 
 	switch mode {
-	case "send":
-		sender := NewSender()
-		err := sender.Connect(":9999")
-		ExitIfError(err)
-
-		txManager := NewTransferManager(sender)
-
-		fileWatcher := NewFileWatcher(txManager)
-		err = fileWatcher.Start()
-		ExitIfError(err)
-
-		initialSync(txManager, path)
-		txManager.Start()
+	case "sync":
+		syncCmd(path)
 
 	case "receive":
-		receiver := NewReceiver()
-		err := receiver.Start(":9999")
-		ExitIfError(err)
+		receiveCmd(path)
 	}
 }
