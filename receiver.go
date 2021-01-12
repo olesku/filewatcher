@@ -100,7 +100,6 @@ func (r *Receiver) Chmod(ctx context.Context, req *FileRequest) (*EmptyResponse,
 // WriteFileBlock (RPC) Write a chunk of data to a file.
 func (r *Receiver) WriteFileBlock(ctx context.Context, req *WriteFileBlockRequest) (*EmptyResponse, error) {
 	// TODO: We should cache the filedescriptor and don't reopen it between each call.
-	// We should also set the permission to the actual file permission on the sender end.
 	fh, err := os.OpenFile(req.GetFilePath(), os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error opening %s: %s\n", req.GetFilePath(), err.Error())
