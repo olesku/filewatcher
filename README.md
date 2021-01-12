@@ -4,6 +4,8 @@ Filewatcher consists of a server and client. The client will monitor all files i
 
 We also do some checks of the actual data to not send a file the remote already has over again. We try to only send the deltas of what has changed when possible to save bandwidth and transfer time.
 
+Developed and tested on Linux, but might work on other OS'es with a functioning Go compiler.
+
 ## How to build
 Standalone binary
 ```bash
