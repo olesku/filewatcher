@@ -44,6 +44,7 @@ func initialSync(tq *TransferManager, path string) {
 		tq.Add(QueueItem{
 			Action: TmActionMkdir,
 			Path:   dir,
+			Mode:   GetFileMode(dir),
 		})
 	}
 

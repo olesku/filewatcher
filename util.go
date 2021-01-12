@@ -1,3 +1,7 @@
+/*
+Written by Ole Fredrik Skudsvik <ole.skudsvik@gmail.com> 2021
+*/
+
 package main
 
 import (
@@ -99,4 +103,16 @@ func StripBasepath(path string) (string, error) {
 	path = strings.TrimPrefix(path, "/")
 
 	return path, nil
+}
+
+// GetFileMode Get mode/perm on a file or directory.
+func GetFileMode(path string) uint32 {
+	fInfo, err := os.Stat(path)
+	if err != nil {
+		return 755
+	}
+
+	log.Printf("GetFileMode %s: %d\n", path, fInfo.Mode().Perm())
+
+	return uint32(fInfo.Mode().Perm())
 }

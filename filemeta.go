@@ -46,7 +46,7 @@ func ReadFile(filePath string, blockSize int64) (*FileMeta, error) {
 	var f FileMeta
 
 	// If blockSize is set to 0 then set it to 10% of the file size,
-	// or to 1MiB if 1% is larger than that.
+	// or to 1MiB if 10% is larger than that.
 	// max packet size for gRPC is 4MiB.
 	if blockSize == 0 {
 		fInfo, err := os.Stat(filePath)

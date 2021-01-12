@@ -1,3 +1,7 @@
+/*
+Written by Ole Fredrik Skudsvik <ole.skudsvik@gmail.com> 2021
+*/
+
 package main
 
 import (
@@ -21,6 +25,7 @@ func NewFileWatcher(transferManager *TransferManager) *FileWatcher {
 	}
 }
 
+// handleWrite Handler for write event.
 func (fw *FileWatcher) handleWrite(event *fsnotify.Event) {
 	fw.tm.Add(QueueItem{
 		Action: TmActionWrite,
@@ -28,11 +33,13 @@ func (fw *FileWatcher) handleWrite(event *fsnotify.Event) {
 	})
 }
 
+// handleCreate Handler for create event.
 func (fw *FileWatcher) handleCreate(event *fsnotify.Event) {
 	if IsDirectory(event.Name) {
 		fw.tm.Add(QueueItem{
 			Action: TmActionMkdir,
 			Path:   event.Name,
+			Mode:   GetFileMode(event.Name),
 		})
 		fw.watcher.Add(event.Name)
 	} else {
@@ -56,6 +63,7 @@ func (fw *FileWatcher) handleCreate(event *fsnotify.Event) {
 	}
 }
 
+// handleChmod Handler for chmod event.
 func (fw *FileWatcher) handleChmod(event *fsnotify.Event) {
 	fInfo, err := os.Stat(event.Name)
 	if err != nil {
@@ -69,7 +77,8 @@ func (fw *FileWatcher) handleChmod(event *fsnotify.Event) {
 	})
 }
 
-func (fw *FileWatcher) handleDelete(event *fsnotify.Event) {
+// handleRemove Handler for remove event.
+func (fw *FileWatcher) handleRemove(event *fsnotify.Event) {
 	fw.tm.Add(QueueItem{
 		Action: TmActionDelete,
 		Path:   event.Name,
@@ -104,15 +113,14 @@ func (fw *FileWatcher) Start() error {
 					return
 				}
 
-				log.Printf("Event: %s\n", event)
-
-				if event.Op == fsnotify.Write {
+				switch event.Op {
+				case fsnotify.Write:
 					fw.handleWrite(&event)
-				} else if event.Op == fsnotify.Create {
+				case fsnotify.Create:
 					fw.handleCreate(&event)
-				} else if event.Op == fsnotify.Remove {
-					fw.handleDelete(&event)
-				} else if event.Op == fsnotify.Chmod {
+				case fsnotify.Remove:
+					fw.handleRemove(&event)
+				case fsnotify.Chmod:
 					fw.handleChmod(&event)
 				}
 
@@ -123,7 +131,7 @@ func (fw *FileWatcher) Start() error {
 					return
 				}
 
-				log.Printf("Error: %s\n", err)
+				log.Printf("Error fsnotify: %s\n", err)
 			}
 		}
 	}()

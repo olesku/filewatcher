@@ -17,6 +17,8 @@ service ReceiverService {
   rpc Delete (FileRequest) returns(EmptyResponse) {}
 }
 
+message EmptyResponse {}
+
 message BlockMetaType {
   int64 Index = 1;
   int64 Offset = 2;
@@ -32,8 +34,6 @@ message FileResponse {
   repeated BlockMetaType BlockMeta = 4;
   string CheckSum = 5;
 }
-
-message EmptyResponse {}
 
 message FileRequest {
   string Path = 1;

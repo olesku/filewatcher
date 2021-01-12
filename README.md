@@ -1,8 +1,8 @@
 # filewatcher
 
-Filewatcher consists of a server and client. The client will monitor all files in a given path and synchronize it to the server as they change.
+Filewatcher consists of a server and client. The client will monitor all files in a given path and synchronize it to the server on connect and as they change.
 
-We also do some checks of the actual data to not send a file the remote already has over again. We also try to only send the deltas of what has changed when possible to save bandwidth and transfer time.
+We also do some checks of the actual data to not send a file the remote already has over again. We try to only send the deltas of what has changed when possible to save bandwidth and transfer time.
 
 ## How to build
 Standalone binary

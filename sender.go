@@ -67,13 +67,11 @@ func (s *Sender) Sync(filePath string) error {
 	// Touch file if it doesn't exist.
 	s.Touch(filePath)
 
-	// Set correct permissions.
-	s.Chmod(filePath, localFile.Mode)
-
 	defer localFile.Close()
 
 	// File has no content yet, so we only create it.
 	if localFile.Size == 0 {
+		s.Chmod(filePath, localFile.Mode)
 		return nil
 	}
 
@@ -128,6 +126,9 @@ func (s *Sender) Sync(filePath string) error {
 		return fmt.Errorf("Failed to truncate file '%s' at %d bytes: %s", filePath, localFile.Size, err.Error())
 	}
 
+	// Set correct permissions.
+	s.Chmod(filePath, localFile.Mode)
+
 	return nil
 }
 
@@ -155,8 +156,15 @@ func (s *Sender) Chmod(path string, mode uint32) error {
 }
 
 // CreateDirectory Create a directory on the remote.
-func (s *Sender) CreateDirectory(path string) error {
-	_, err := s.client.CreateDirectory(context.Background(), &FileRequest{Path: path})
+func (s *Sender) CreateDirectory(path string, mode uint32) error {
+	if path == "." || path == ".." {
+		return nil
+	}
+
+	_, err := s.client.CreateDirectory(context.Background(), &FileRequest{
+		Path: path,
+		Mode: mode,
+	})
 
 	if err != nil {
 		return err

@@ -1,3 +1,7 @@
+/*
+Written by Ole Fredrik Skudsvik <ole.skudsvik@gmail.com> 2021
+*/
+
 package main
 
 import (
@@ -119,7 +123,7 @@ func (tq *TransferManager) processQueue() {
 			tq.sender.Sync(item.Path)
 
 		case TmActionMkdir:
-			tq.sender.CreateDirectory(item.Path)
+			tq.sender.CreateDirectory(item.Path, item.Mode)
 
 		case TmActionDelete:
 			tq.sender.Delete(item.Path)
