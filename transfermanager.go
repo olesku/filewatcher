@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 )
@@ -66,7 +67,7 @@ func (tq *TransferManager) Add(item QueueItem) error {
 	filePath, err := StripBasepath(item.Path)
 
 	if err != nil {
-		return fmt.Errorf("stripBasePath error: %s", err.Error())
+		return fmt.Errorf("StripBasePath error: %s", err.Error())
 	}
 
 	item.Path = filePath
@@ -114,24 +115,30 @@ func (tq *TransferManager) processQueue() {
 
 		switch item.Action {
 		case TmActionTouch:
+			log.Printf("TOUCH\t%s\n", item.Path)
 			tq.sender.Touch(item.Path)
 
 		case TmActionChmod:
+			log.Printf("CHMOD\t%s\t%d\n", item.Path, item.Mode)
 			tq.sender.Chmod(item.Path, item.Mode)
 
 		case TmActionWrite:
+			log.Printf("WRITE\t%s\n", item.Path)
 			tq.sender.Sync(item.Path)
 
 		case TmActionMkdir:
+			log.Printf("MKDIR\t%s\t%d\n", item.Path, item.Mode)
 			tq.sender.CreateDirectory(item.Path, item.Mode)
 
 		case TmActionDelete:
+			log.Printf("REMOVE\t%s\n", item.Path)
 			tq.sender.Delete(item.Path)
 
 		case TmActionRename:
 			newPath, err := StripBasepath(item.RenamePath)
 
 			if err == nil {
+				log.Printf("RENAME\t%s\t%d\n", item.Path, item.Mode)
 				tq.sender.Rename(item.Path, newPath)
 			}
 		}

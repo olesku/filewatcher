@@ -112,7 +112,5 @@ func GetFileMode(path string) uint32 {
 		return 755
 	}
 
-	log.Printf("GetFileMode %s: %d\n", path, fInfo.Mode().Perm())
-
 	return uint32(fInfo.Mode().Perm())
 }

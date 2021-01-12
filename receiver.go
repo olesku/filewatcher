@@ -149,6 +149,7 @@ func (r *Receiver) GetFileMeta(ctx context.Context, req *FileRequest) (*FileResp
 		NumBlocks: f.NumBlocks,
 		BlockMeta: blockMetaList,
 		CheckSum:  f.CheckSum,
+		Size:      f.Size,
 	}
 
 	return resp, nil
@@ -182,6 +183,7 @@ func GetRemoteFileMeta(client ReceiverServiceClient, filePath string, blockSize 
 		NumBlocks: resp.GetNumBlocks(),
 		Blocks:    blockList,
 		CheckSum:  resp.GetCheckSum(),
+		Size:      resp.GetSize(),
 	}, nil
 }
 

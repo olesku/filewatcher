@@ -7,7 +7,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net"
 
 	"google.golang.org/grpc"
@@ -76,20 +75,16 @@ func (s *Sender) Sync(filePath string) error {
 	}
 
 	// Get metadata for the file on the receiver end.
-	var missingBlocks []int64
 	remoteFile, err := GetRemoteFileMeta(s.client, filePath, localFile.BlockSize)
+
+	// Find the delta between the origin file and the remote.
+	var missingBlocks []int64
 	if err != nil {
-		log.Printf("File %s was not found on remote.\n", filePath)
-		// If file was not found on remote end we should write all blocks.
-		for i := int64(0); i < localFile.NumBlocks; i++ {
-			missingBlocks = append(missingBlocks, i)
-		}
+		missingBlocks = GetMissingBlocks(localFile, nil)
 	} else {
 		// Compare the file on the remote and return the missing blocks.
 		missingBlocks = GetMissingBlocks(localFile, remoteFile)
 	}
-
-	log.Printf("File %s: Writing blocks: %v\nBlocksize: %d\n", filePath, missingBlocks, localFile.BlockSize)
 
 	// Write blocks returned above to the remote.
 	for _, blockNum := range missingBlocks {
@@ -103,7 +98,6 @@ func (s *Sender) Sync(filePath string) error {
 			return fmt.Errorf("Failed to get block data for block #%d in file '%s': %s", blockNum, filePath, err.Error())
 		}
 
-		//fmt.Printf("Writing block #%d (%d bytes)\n", blockNum, blockMeta.Size)
 		_, err = s.client.WriteFileBlock(context.Background(), &WriteFileBlockRequest{
 			FilePath: filePath,
 			Offset:   blockMeta.Offset,

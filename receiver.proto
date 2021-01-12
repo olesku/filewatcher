@@ -33,6 +33,7 @@ message FileResponse {
   int64 NumBlocks = 3;
   repeated BlockMetaType BlockMeta = 4;
   string CheckSum = 5;
+  int64 Size = 6;
 }
 
 message FileRequest {
