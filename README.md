@@ -41,5 +41,6 @@ mkdir /tmp/syncdir && \
 * Authentication
 * TLS
 * Compression
+* Better error handling for edgecases, etc
 * Tests
 * Improved code quality
